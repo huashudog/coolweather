@@ -46,7 +46,7 @@ public class ChooseAreaActivity extends Activity {
 	private City selectedCity;
 
 	private ProgressDialog progressDialog;
-    
+    private boolean isFromWeatherActivity;
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -54,7 +54,11 @@ public class ChooseAreaActivity extends Activity {
 			queryCities();
 		}else if(currentLevel == LEVEL_CITY){
 			queryProvinces();
-		}else if(currentLevel == LEVEL_PROVINCE){
+		}else {
+			if(isFromWeatherActivity){
+				Intent intent= new Intent(this,WeatherActivity.class);
+				this.startActivity(intent);
+			}
 			finish();
 		}
 	}
@@ -62,10 +66,12 @@ public class ChooseAreaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
+		isFromWeatherActivity= this.getIntent().getBooleanExtra(
+				"from_weather_activity", false);
 		SharedPreferences prefs= PreferenceManager
 				.getDefaultSharedPreferences(this);
-		if(prefs.getBoolean("city_selected", false)){
+		if(prefs.getBoolean("city_selected", false)
+				&&(!isFromWeatherActivity)){
 			Intent intent= new Intent(this,WeatherActivity.class);
 			startActivity(intent);
 			finish();
